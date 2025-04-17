@@ -1,2 +1,2 @@
-# sb01-deokhugam-team10
-Goospel/sb01-deokhugam-team10
+# sb01---team10
+코드잇 part3-10팀 덕후감 프로젝트
