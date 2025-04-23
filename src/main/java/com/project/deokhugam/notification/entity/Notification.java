@@ -5,8 +5,14 @@ import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
+import com.project.deokhugam.user.entity.User;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,7 +30,6 @@ public class Notification {
 
 	@Id
 	@Column(name = "notification_id", columnDefinition = "BINARY(16)")
-	// UUID로 변경
 	private UUID id;
 
 	@Column(name = "review_id", nullable = false, columnDefinition = "BINARY(16)")
@@ -47,4 +52,12 @@ public class Notification {
 
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
+
+	/**
+	 * User.notifications(mappedBy="user") 와 매핑될 필드
+	 * insertable=false, updatable=false 로 userId 필드를 우선 사용하도록 설정
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", insertable = false, updatable = false)
+	private User user;
 }
