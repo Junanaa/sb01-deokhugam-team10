@@ -16,22 +16,22 @@ public class GlobalExceptionHandler {
 	// 존재하지 않는 요청에 대한 예외
 	@ExceptionHandler(value = {NoHandlerFoundException.class,
 		HttpRequestMethodNotSupportedException.class})
-	public CustomApiResponse<?> handleNoPageFoundException(Exception e) {
-		log.error("GlobalExceptionHandler catch NoHandlerFoundException : {}", e.getMessage());
+	public CustomApiResponse<?> handleNoPageFoundException(Exception ex) {
+		log.error("GlobalExceptionHandler catch NoHandlerFoundException : {}", ex.getMessage());
 		return CustomApiResponse.fail(new CustomException(ErrorCode.INTERNAL_SERVER_ERROR));
 	}
 
 	@ExceptionHandler(value = {CustomException.class})
-	public CustomApiResponse<?> handleCustomException(CustomException e) {
+	public CustomApiResponse<?> handleCustomException(CustomException ex) {
 		log.error("handleCustomException() in GlobalExceptionHandler throw CustomException : {}",
-			e.getMessage());
-		return CustomApiResponse.fail(e);
+			ex.getMessage());
+		return CustomApiResponse.fail(ex);
 	}
 
 	@ExceptionHandler(value = {Exception.class})
-	public CustomApiResponse<?> handleException(Exception e) {
+	public CustomApiResponse<?> handleException(Exception ex) {
 		log.error("handleCustomException() in GlobalExceptionHandler throw Exception : {}",
-			e.getMessage());
+			ex.getMessage());
 		return CustomApiResponse.fail(new CustomException(ErrorCode.INTERNAL_SERVER_ERROR));
 	}
 }

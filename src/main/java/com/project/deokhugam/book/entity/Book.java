@@ -1,6 +1,7 @@
 package com.project.deokhugam.book.entity;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,7 +25,7 @@ public class Book {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long bookId;
+	private UUID bookId;
 
 	private String title;
 	private String author;
@@ -43,4 +44,3 @@ public class Book {
 	private Long bookRank;
 	private Long bookScore;
 }
-
