@@ -1,4 +1,4 @@
-package com.example.deokhugam_team10.healthcheck.controller;
+package com.project.deokhugam.healthcheck.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HealthCheckController {
 
-    @GetMapping("/health")
-    public String healthCheck() {
-        return "OK";
-    }
+	@GetMapping("/health")
+	public String healthCheck() {
+		return "OK";
+	}
 }
