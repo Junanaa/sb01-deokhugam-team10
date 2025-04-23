@@ -1,8 +1,8 @@
-package com.example.deokhugam_team10.notification.entity;
+package com.project.deokhugam.notification.entity;
 
-import com.example.deokhugam_team10.book.entity.Book;
-import com.example.deokhugam_team10.review.entity.Review;
-import com.example.deokhugam_team10.user.entity.User;
+import com.project.deokhugam.book.entity.Book;
+import com.project.deokhugam.review.entity.Review;
+import com.project.deokhugam.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 

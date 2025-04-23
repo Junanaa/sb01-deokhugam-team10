@@ -1,4 +1,4 @@
-package com.example.deokhugam_team10.user.entity;
+package com.project.deokhugam.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

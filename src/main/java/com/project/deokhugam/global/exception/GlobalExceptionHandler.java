@@ -1,6 +1,6 @@
-package com.example.deokhugam_team10.global.exception;
+package com.project.deokhugam.global.exception;
 
-import com.example.deokhugam_team10.global.response.CustomApiResponse;
+import com.project.deokhugam.global.response.CustomApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;

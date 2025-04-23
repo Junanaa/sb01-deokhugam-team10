@@ -1,4 +1,4 @@
-package com.example.deokhugam_team10;
+package com.project.deokhugam;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

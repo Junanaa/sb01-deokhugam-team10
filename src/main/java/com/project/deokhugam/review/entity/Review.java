@@ -1,8 +1,7 @@
-package com.example.deokhugam_team10.comment.entity;
+package com.project.deokhugam.review.entity;
 
-import com.example.deokhugam_team10.book.entity.Book;
-import com.example.deokhugam_team10.review.entity.Review;
-import com.example.deokhugam_team10.user.entity.User;
+import com.project.deokhugam.book.entity.Book;
+import com.project.deokhugam.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,16 +13,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "comment")
-public class Comment {
+@Table(name = "review")
+public class Review {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long commentId;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "review_id")
-  private Review review;
+  private Long reviewId;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "book_id")
@@ -33,10 +28,15 @@ public class Comment {
   @JoinColumn(name = "user_id")
   private User user;
 
-  @Lob
-  private String content;
+  private String reviewContent;
 
+  private Long likeCount;
+  private Long commentCount;
+  private Long reviewRating;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
+  private Long reviewRank;
+  private Long reviewScore;
+  private Boolean liked;
 }
 

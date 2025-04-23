@@ -1,6 +1,6 @@
-package com.example.deokhugam_team10.global.response;
+package com.project.deokhugam.global.response;
 
-import com.example.deokhugam_team10.global.exception.CustomException;
+import com.project.deokhugam.global.exception.CustomException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.annotation.Nullable;

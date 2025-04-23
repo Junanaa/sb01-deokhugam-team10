@@ -1,6 +1,6 @@
-package com.example.deokhugam_team10.global.response;
+package com.project.deokhugam.global.response;
 
-import com.example.deokhugam_team10.global.exception.ErrorCode;
+import com.project.deokhugam.global.exception.ErrorCode;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import org.springframework.http.HttpStatus;

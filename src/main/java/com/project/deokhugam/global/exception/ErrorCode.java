@@ -1,4 +1,4 @@
-package com.example.deokhugam_team10.global.exception;
+package com.project.deokhugam.global.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

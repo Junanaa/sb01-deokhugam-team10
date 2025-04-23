@@ -1,4 +1,4 @@
-package com.example.deokhugam_team10.dashboard.entity;
+package com.project.deokhugam.dashboard.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,8 +21,8 @@ public class Dashboard {
   private String type;
   private String period;
   private String targetId;
-  private String bookId;
-  private String userId;
+  private Long bookId;
+  private Long userId;
   private Double score;
   private Long rank;
   private Long likeCount;
