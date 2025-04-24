@@ -24,8 +24,8 @@ public record CustomApiResponse<T>(
 		return new CustomApiResponse<>(HttpStatus.CREATED, true, data, null);
 	}
 
-	public static <T> CustomApiResponse<T> fail(final CustomException e) {
-		return new CustomApiResponse<>(e.getErrorCode().getStatus(), false, null,
-			ErrorResponse.of(e.getErrorCode()));
+	public static <T> CustomApiResponse<T> fail(final CustomException ex) {
+		return new CustomApiResponse<>(ex.getErrorCode().getStatus(), false, null,
+			ErrorResponse.of(ex.getErrorCode()));
 	}
 }

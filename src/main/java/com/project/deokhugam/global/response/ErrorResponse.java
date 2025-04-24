@@ -11,8 +11,15 @@ import lombok.Builder;
 
 @Builder
 public record ErrorResponse(
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC") Instant timestamp,
-	HttpStatus status, String message, String details
+	@JsonFormat(
+		shape = JsonFormat.Shape.STRING,
+		pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX",
+		timezone = "UTC"
+	)
+	Instant timestamp,
+	HttpStatus status,
+	String message,
+	String details
 ) {
 	public static ErrorResponse of(ErrorCode errorCode) {
 		return ErrorResponse.builder()
