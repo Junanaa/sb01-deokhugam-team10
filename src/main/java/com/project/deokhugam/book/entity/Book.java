@@ -1,5 +1,6 @@
 package com.project.deokhugam.book.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -40,7 +41,7 @@ public class Book {
 	private String description;
 
 	private String publisher;
-	private LocalDateTime publishedDate;
+	private LocalDate publishedDate;
 	private String isbn;
 	private String thumbnailUrl;
 	private String thumbnailImage;
@@ -50,4 +51,5 @@ public class Book {
 	private LocalDateTime updatedAt;
 	private Long bookRank;
 	private Long bookScore;
+	private boolean deleted = false;
 }
