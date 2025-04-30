@@ -1,13 +1,4 @@
 spring:
-  profiles:
-    active: h2
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: postgresql
   application:
     name: sb01-deokhugam-team10
   servlet:
@@ -31,6 +22,9 @@ spring:
     url: jdbc:postgresql://localhost:5432/${DB_NAME}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+  sql:
+    init:
+      mode: always  # 👉 이 줄이 반드시 있어야 함!
 
 server:
   port: 8080
@@ -63,63 +57,6 @@ naver:
     id: oUk4S67rM6Mzfqn1vcpV
     secret: 6REVUhlHPi
 
----
-
-spring:
-  config:
-    activate:
-      on-profile: h2
-  application:
-    name: sb01-deokhugam-team10
-  servlet:
-    multipart:
-      enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: create
-    database: h2
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        use_sql_comments: true
-        highlight_sql: true
-        generate_statistics: true
-  transaction:
-    default-timeout: 30
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/querydsl
-    username: sa
-    password: ""
-
-server:
-  port: 8080
-  tomcat:
-    uri-encoding: UTF-8
-  servlet:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
-
-logging:
-  level:
-    org:
-      hibernate:
-        sql: debug
-
-springdoc:
-  swagger-ui:
-    operations-sorter: alpha
-    tags-sorter: alpha
-    path: /swagger-ui
-    display-request-duration: true
-    doc-expansion: none
-    filter: true
-    show-extensions: true
-
-naver:
-  client:
-    id: oUk4S67rM6Mzfqn1vcpV
-    secret: 6REVUhlHPi
+dashboard:
+  server:
+    url: http://localhost:8080/
