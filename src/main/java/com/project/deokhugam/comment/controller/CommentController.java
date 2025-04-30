@@ -45,9 +45,7 @@ public class CommentController {
             @RequestParam(required = false) String after,
             @RequestParam(required = false, defaultValue = "50") Integer limit
     ) {
-        commentService.findComments(reviewId, direction, cursor, after, limit);
-
-        return null;
+        return commentService.findComments(reviewId, direction, cursor, after, limit);
     }
 
     // 댓글 상세 정보 조회

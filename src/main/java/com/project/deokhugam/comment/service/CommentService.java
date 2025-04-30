@@ -3,6 +3,7 @@ package com.project.deokhugam.comment.service;
 import com.project.deokhugam.book.entity.Book;
 import com.project.deokhugam.comment.dto.RequestCreateCommentDto;
 import com.project.deokhugam.comment.dto.ResponseCreateCommentDto;
+import com.project.deokhugam.comment.dto.ResponseGetCommentsDto;
 import com.project.deokhugam.comment.entity.Comment;
 import com.project.deokhugam.comment.repository.CommentRepository;
 import com.project.deokhugam.review.entity.Review;
@@ -10,13 +11,17 @@ import com.project.deokhugam.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -53,8 +58,47 @@ public class CommentService {
      *
      * + deleted 상태를 봐서 논리적으로 없는 댓글은 조회에서 제외해야함.
      */
-    public void findComments(String reviewId, String direction, String cursor, String after, Integer limit) {
-        reviewRepository.findById(reviewId);
+    public ResponseGetCommentsDto findComments(String reviewId, String direction, String cursor, String after, Integer limit) {
+        LocalDateTime cursorCreatedAt = null;
+        UUID cursorId = null;
+
+        if (cursor != null) {
+            String[] parts = cursor.split("_");
+            if (parts.length == 2) {
+                cursorCreatedAt = LocalDateTime.parse(parts[0]);
+                cursorId = UUID.fromString(parts[1]);
+            }
+        }
+
+        Pageable pageable = PageRequest.of(0, limit); // 커서 페이징은 PageRequest 써도 됨 (sort는 JPQL에서 고정했으므로 무시됨)
+
+        List<Comment> comments = commentRepository.findCommentsByReviewIdWithCursor(reviewId, cursorCreatedAt, cursorId, pageable);
+
+        List<ResponseCreateCommentDto> commentDtos = comments.stream()
+                .map(comment -> new ResponseCreateCommentDto(
+                        String.valueOf(comment.getId()),
+                        String.valueOf(comment.getReview().getReviewId()),
+                        String.valueOf(comment.getUser().getUserId()),
+                        comment.getUser().getNickname(),
+                        comment.getContent(),
+                        String.valueOf(comment.getCreatedAt()),
+                        String.valueOf(comment.getUpdatedAt())
+                ))
+                .collect(Collectors.toList());
+
+        ResponseGetCommentsDto response = new ResponseGetCommentsDto();
+        if (!commentDtos.isEmpty()) {
+            response.setResponseCreateCommentDto(commentDtos.get(0)); // 단일 반환이라면 첫 번째로 세팅
+            Comment lastComment = comments.get(comments.size() - 1);
+            response.setNextCursor(lastComment.getCreatedAt().toString() + "_" + lastComment.getId());
+            response.setHasNext(comments.size() == limit); // limit보다 적으면 마지막 페이지
+        } else {
+            response.setHasNext(false);
+        }
+
+        response.setSize(commentDtos.size());
+        response.setTotalElements(commentDtos.size()); // 전체 count는 안 쓰는 걸 권장
+        return response;
     }
 
     public ResponseCreateCommentDto findById(UUID commentId) {
