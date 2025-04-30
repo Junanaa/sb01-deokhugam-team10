@@ -58,6 +58,11 @@ springdoc:
     filter: true
     show-extensions: true
 
+naver:
+  client:
+    id: oUk4S67rM6Mzfqn1vcpV
+    secret: 6REVUhlHPi
+
 ---
 
 spring:
@@ -113,3 +118,8 @@ springdoc:
     doc-expansion: none
     filter: true
     show-extensions: true
+
+naver:
+  client:
+    id: oUk4S67rM6Mzfqn1vcpV
+    secret: 6REVUhlHPi

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CommentRepository extends JpaRepository<Comment, UUID> {
-    List<Comment> findByReview_ReviewIdAndDeletedFalseOrderByCreatedAtDesc(String reviewId);
+    List<Comment> findByReview_ReviewIdAndDeletedFalseOrderByCreatedAtDesc(UUID reviewId);
 
     @Query("""
     SELECT c FROM Comment c
