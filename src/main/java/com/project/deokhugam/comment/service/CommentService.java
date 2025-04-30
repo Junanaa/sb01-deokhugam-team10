@@ -7,7 +7,9 @@ import com.project.deokhugam.comment.dto.ResponseGetCommentsDto;
 import com.project.deokhugam.comment.entity.Comment;
 import com.project.deokhugam.comment.repository.CommentRepository;
 import com.project.deokhugam.review.entity.Review;
+import com.project.deokhugam.review.repository.ReviewRepository;
 import com.project.deokhugam.user.entity.User;
+import com.project.deokhugam.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
@@ -33,9 +35,14 @@ public class CommentService {
     private final ReviewRepository reviewRepository;
 
     public ResponseCreateCommentDto save(RequestCreateCommentDto createCommentDto) {
+        String reviewId = createCommentDto.getReviewId();
+        UUID reviewIdUUID = UUID.fromString(reviewId);
+        String userId = createCommentDto.getUserId();
+        UUID userIdUUID = UUID.fromString(userId);
+
         Comment savedComment = commentRepository.save(new Comment(
-                reviewRepository.findById(createCommentDto.getReviewId()),
-                userRepository.findById(createCommentDto.getUserId()),
+                reviewRepository.findById(reviewIdUUID).get(),
+                userRepository.findById(userIdUUID).get(),
                 createCommentDto.getContent(),
                 LocalDateTime.now(),
                 LocalDateTime.now()
@@ -118,7 +125,7 @@ public class CommentService {
     public ResponseEntity<ResponseCreateCommentDto> updateCommentContents(String commentId, String deokhugamRequestUserId, String content) {
 
         // 사용자 아이디는 검증을 위해서 필요한건가?
-        Optional<User> findUser = userRepository.findById(deokhugamRequestUserId);
+        Optional<User> findUser = userRepository.findById(UUID.fromString(deokhugamRequestUserId));
         Optional<Comment> findComment = commentRepository.findById(UUID.fromString(commentId));
 
         // 요청으로 온 UserID와 댓글의 UserId가 다르면 로그찍고 badRequest반환
@@ -152,7 +159,7 @@ public class CommentService {
 
     public HttpStatus deleteCommentLogically(String commentId, String deokhugamRequestUserId) {
 
-        Optional<User> findUser = userRepository.findById(deokhugamRequestUserId);
+        Optional<User> findUser = userRepository.findById(UUID.fromString(deokhugamRequestUserId));
         Optional<Comment> findComment = commentRepository.findById(UUID.fromString(commentId));
 
         // 요청 사용자 아이디와 댓글의 사용자 아이디 정보가 일치하지 않으면
@@ -174,7 +181,7 @@ public class CommentService {
     }
 
     public HttpStatus deleteCommentHardly(String commentId, String deokhugamRequestUserId) {
-        Optional<User> findUser = userRepository.findById(deokhugamRequestUserId);
+        Optional<User> findUser = userRepository.findById(UUID.fromString(deokhugamRequestUserId));
         Optional<Comment> findComment = commentRepository.findById(UUID.fromString(commentId));
 
         // 요청 사용자 아이디와 댓글의 사용자 아이디 정보가 일치하지 않으면
