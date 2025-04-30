@@ -1,5 +1,8 @@
 package com.project.deokhugam.global.exception;
 
+import com.project.deokhugam.book.exception.BookNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -42,7 +45,5 @@ public class GlobalExceptionHandler {
 
 		return CustomApiResponse.fail(new CustomException(ErrorCode.INVALID_INPUT_VALUE));
 	}
-
-
-
+  
 }
