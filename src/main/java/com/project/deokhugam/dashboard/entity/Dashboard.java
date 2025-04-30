@@ -42,15 +42,15 @@ public class Dashboard {
 	private String period;
 
 	@Column(nullable = false)
-	private String targetId;
+	private UUID targetId;
 
-	@Column(name = "book_id", insertable = false, updatable = false)
+	@Column(name = "book_id")
 	private UUID bookId;
 
-	@Column(name = "user_id", insertable = false, updatable = false)
+	@Column(name = "user_id")
 	private UUID userId;
 
-	@Column(name = "review_id", insertable = false, updatable = false)
+	@Column(name = "review_id")
 	private UUID reviewId;
 
 	@Column(nullable = false)
