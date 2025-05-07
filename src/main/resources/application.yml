@@ -22,6 +22,9 @@ spring:
     url: jdbc:postgresql://localhost:5432/${DB_NAME}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+  sql:
+    init:
+      mode: always  # 👉 이 줄이 반드시 있어야 함!
 
 server:
   port: 8080
@@ -48,3 +51,12 @@ springdoc:
     doc-expansion: none
     filter: true
     show-extensions: true
+
+naver:
+  client:
+    id: oUk4S67rM6Mzfqn1vcpV
+    secret: 6REVUhlHPi
+
+dashboard:
+  server:
+    url: http://localhost:8080/

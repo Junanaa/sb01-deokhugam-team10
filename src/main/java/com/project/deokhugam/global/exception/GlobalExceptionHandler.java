@@ -1,6 +1,10 @@
 package com.project.deokhugam.global.exception;
 
+import com.project.deokhugam.book.exception.BookNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -34,4 +38,12 @@ public class GlobalExceptionHandler {
 			ex.getMessage());
 		return CustomApiResponse.fail(new CustomException(ErrorCode.INTERNAL_SERVER_ERROR));
 	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public CustomApiResponse<?> handleValidationError(MethodArgumentNotValidException ex) {
+		log.error("Validation error occurred in GlobalExceptionHandler: {}", ex.getMessage());
+
+		return CustomApiResponse.fail(new CustomException(ErrorCode.INVALID_INPUT_VALUE));
+	}
+  
 }
