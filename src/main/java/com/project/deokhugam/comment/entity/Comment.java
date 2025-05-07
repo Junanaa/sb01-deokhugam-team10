@@ -38,7 +38,6 @@ public class Comment {
 	@JoinColumn(name = "review_id")
 	private Review review;
 
-	@Column(nullable = false)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
