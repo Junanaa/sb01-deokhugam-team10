@@ -2,11 +2,16 @@ package com.project.deokhugam.book.controller;
 
 import com.project.deokhugam.book.dto.BookInfoResponse;
 import com.project.deokhugam.book.dto.BookRequestDto;
+import com.project.deokhugam.book.dto.BookResponse;
 import com.project.deokhugam.book.dto.BookUpdateRequest;
+import com.project.deokhugam.book.dto.CursorPageResponse;
 import com.project.deokhugam.book.entity.Book;
 import com.project.deokhugam.book.service.BookService;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.UUID;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,5 +63,18 @@ public class BookController {
   public ResponseEntity<Void> deleteBookHard(@PathVariable UUID bookId){
     bookService.deleteHard(bookId);
     return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping
+  public ResponseEntity<CursorPageResponse<BookResponse>> getBooks(
+      @RequestParam(required = false) String keyword,
+      @RequestParam(defaultValue = "title") String orderBy,
+      @RequestParam(defaultValue = "ASC") Sort.Direction direction,
+      @RequestParam(required = false) String cursor,
+      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime after,
+      @RequestParam(defaultValue = "10") int limit
+  ) {
+    CursorPageResponse<BookResponse> response = bookService.getBooks(keyword, orderBy, direction, cursor, after, limit);
+    return ResponseEntity.ok(response);
   }
 }

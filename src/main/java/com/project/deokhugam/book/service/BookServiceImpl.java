@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.deokhugam.book.dto.BookInfoResponse;
 import com.project.deokhugam.book.dto.BookRequestDto;
+import com.project.deokhugam.book.dto.BookResponse;
 import com.project.deokhugam.book.dto.BookUpdateRequest;
+import com.project.deokhugam.book.dto.CursorPageResponse;
 import com.project.deokhugam.book.entity.Book;
 import com.project.deokhugam.book.exception.BookNotFoundException;
 import com.project.deokhugam.book.mapper.BookMapper;
@@ -12,6 +14,8 @@ import com.project.deokhugam.book.repository.BookRepository;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -141,4 +145,15 @@ public class BookServiceImpl implements BookService {
     bookRepository.delete(book);
   }
 
+  @Override
+  public CursorPageResponse<BookResponse> getBooks(
+      String keyword,
+      String orderBy,
+      Sort.Direction direction,
+      String cursor,
+      LocalDateTime after,
+      int limit
+  ) {
+    return bookRepository.searchBooks(keyword, orderBy, direction, cursor, after, limit);
+  }
 }
