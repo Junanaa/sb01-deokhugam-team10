@@ -1,25 +1,19 @@
 package com.project.deokhugam.comment.entity;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import com.project.deokhugam.book.entity.Book;
 import com.project.deokhugam.review.entity.Review;
 import com.project.deokhugam.user.entity.User;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Getter
@@ -31,25 +25,42 @@ import lombok.Setter;
 public class Comment {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long commentId;
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(
+			name = "UUID",
+			strategy = "org.hibernate.id.UUIDGenerator"
+	)
+	@Column(name = "comment_id", updatable = false, nullable = false)
+	private UUID id;
 
+	@Column(nullable = false)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "review_id")
 	private Review review;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "book_id")
-	private Book book;
-
+	@Column(nullable = false)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
 	@Lob
+	@Column(nullable = false)
 	private String content;
 
+	@Column(nullable = false)
 	private LocalDateTime createdAt;
+	@Column(nullable = false)
 	private LocalDateTime updatedAt;
+
+	@Column(nullable = false)
+	private boolean deleted;
+
+	public Comment(Review review, User user, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
+		this.review = review;
+		this.user = user;
+		this.content = content;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
 }
 

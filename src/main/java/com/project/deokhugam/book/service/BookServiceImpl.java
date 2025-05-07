@@ -98,7 +98,6 @@ public class BookServiceImpl implements BookService {
       book.setBookRating(request.getRating());
     }
 
-    // updatedAt은 서버에서 현재 시간으로 덮어쓰기
     book.setUpdatedAt(LocalDateTime.now());
 
     return bookRepository.save(book);
