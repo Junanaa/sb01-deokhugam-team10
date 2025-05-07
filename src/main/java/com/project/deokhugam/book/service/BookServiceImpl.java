@@ -11,11 +11,11 @@ import com.project.deokhugam.book.entity.Book;
 import com.project.deokhugam.book.exception.BookNotFoundException;
 import com.project.deokhugam.book.mapper.BookMapper;
 import com.project.deokhugam.book.repository.BookRepository;
+import com.project.deokhugam.file.S3Uploader;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -38,10 +39,13 @@ public class BookServiceImpl implements BookService {
 
   private final BookRepository bookRepository;
   private final BookMapper bookMapper;
+  private final S3Uploader s3Uploader;
 
-  public BookServiceImpl(BookRepository bookRepository, BookMapper bookMapper) {
+  public BookServiceImpl(BookRepository bookRepository, BookMapper bookMapper,
+      S3Uploader s3Uploader) {
     this.bookRepository = bookRepository;
     this.bookMapper = bookMapper;
+    this.s3Uploader = s3Uploader;
   }
 
   @Override
@@ -154,5 +158,26 @@ public class BookServiceImpl implements BookService {
       int limit
   ) {
     return bookRepository.searchBooks(keyword, orderBy, direction, cursor, after, limit);
+  }
+
+  @Override
+  public void registerBook(BookRequestDto request, MultipartFile thumbnail) {
+    String thumbnailUrl = s3Uploader.upload(thumbnail, "book-thumbnails");
+
+    Book book = Book.builder()
+        .title(request.getTitle())
+        .author(request.getAuthor())
+        .description(request.getDescription()) //null
+        .publisher(request.getPublisher())
+        .publishedDate(request.getPublishedDate())
+        .isbn(request.getIsbn()) //null
+        .thumbnailUrl(thumbnailUrl)
+        .reviewCount(0L)
+        .bookRating(0L)
+        .createdAt(LocalDateTime.now())
+        .updatedAt(LocalDateTime.now())
+        .build();
+
+    bookRepository.save(book);
   }
 }

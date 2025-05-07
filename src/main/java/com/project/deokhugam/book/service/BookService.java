@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface BookService {
   void create(BookRequestDto request);
@@ -32,4 +33,5 @@ public interface BookService {
       int limit
   );
 
+  void registerBook(BookRequestDto request, MultipartFile thumbnail);
 }

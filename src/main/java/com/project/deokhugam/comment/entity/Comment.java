@@ -33,7 +33,6 @@ public class Comment {
 	@Column(name = "comment_id", updatable = false, nullable = false)
 	private UUID id;
 
-	@Column(nullable = false)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "review_id")
 	private Review review;
