@@ -70,42 +70,28 @@ public class BookServiceImpl implements BookService {
   }
 
   @Override
-  public Book update(UUID bookId, BookUpdateRequest request) {
+  public Book update(UUID bookId, BookUpdateRequest request, MultipartFile thumbnailImage) {
     Book book = bookRepository.findById(bookId)
         .orElseThrow(() -> new BookNotFoundException(bookId));
 
-    if (request.getTitle() != null) {
-      book.setTitle(request.getTitle());
-    }
-    if (request.getAuthor() != null) {
-      book.setAuthor(request.getAuthor());
-    }
-    if (request.getDescription() != null) {
-      book.setDescription(request.getDescription());
-    }
-    if (request.getPublisher() != null) {
-      book.setPublisher(request.getPublisher());
-    }
-    if (request.getPublishedDate() != null) {
-      book.setPublishedDate(request.getPublishedDate());
-    }
-    if (request.getIsbn() != null) {
-      book.setIsbn(request.getIsbn());
-    }
-    if (request.getThumbnailUrl() != null) {
-      book.setThumbnailUrl(request.getThumbnailUrl());
-    }
-    if (request.getReviewCount() != null) {
-      book.setReviewCount(request.getReviewCount());
-    }
-    if (request.getRating() != null) {
-      book.setBookRating(request.getRating());
+    if (thumbnailImage != null && !thumbnailImage.isEmpty()) {
+      // 3. 이미지 변경
+      String thumbnailUrl = s3Uploader.upload(thumbnailImage, "book-thumbnails");
+      book.setThumbnailUrl(thumbnailUrl);
+    } else {
+      book.setThumbnailUrl(null);
     }
 
+    book.setTitle(request.getTitle());
+    book.setAuthor(request.getAuthor());
+    book.setDescription(request.getDescription());
+    book.setPublisher(request.getPublisher());
+    book.setPublishedDate(request.getPublishedDate());
     book.setUpdatedAt(LocalDateTime.now());
 
     return bookRepository.save(book);
   }
+
 
   @Override
   public BookInfoResponse searchByIsbn(String isbn) {

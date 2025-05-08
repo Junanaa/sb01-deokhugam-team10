@@ -9,7 +9,6 @@ import com.project.deokhugam.book.entity.Book;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface BookService {
@@ -19,7 +18,7 @@ public interface BookService {
 
   void delete(UUID bookId);
 
-  Book update(UUID bookId, BookUpdateRequest request);
+  Book update(UUID bookId, BookUpdateRequest request, MultipartFile thumbnailImage);
 
   BookInfoResponse searchByIsbn(String isbn);
 
