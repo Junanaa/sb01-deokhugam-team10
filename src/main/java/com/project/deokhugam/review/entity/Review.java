@@ -36,6 +36,8 @@ public class Review {
 
     private Long likeCount;
     private Long commentCount;
+
+    @Column(name = "review_rating", nullable = false)
     private Long rating;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
