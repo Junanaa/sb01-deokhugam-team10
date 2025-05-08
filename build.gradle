@@ -13,6 +13,10 @@ java {
         languageVersion = JavaLanguageVersion.of(21)
     }
 }
+springBoot {
+    mainClass = 'com.project.deokhugam.DeokhugamTeam10Application'
+}
+
 
 configurations {
     compileOnly {
