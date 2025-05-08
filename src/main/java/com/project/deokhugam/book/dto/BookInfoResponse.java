@@ -1,16 +1,22 @@
 package com.project.deokhugam.book.dto;
 
+import java.time.LocalDate;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookInfoResponse {
   private String title;
-  private String link;
-  private String image;
+  private String thumbnailImage;
   private String author;
-  private String discount;
   private String publisher;
-  private String pubdate;
+  private LocalDate publishedDate;
   private String isbn;
   private String description;
 }

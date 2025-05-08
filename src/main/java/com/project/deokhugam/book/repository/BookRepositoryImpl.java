@@ -30,6 +30,8 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
 
     List<Predicate> predicates = new ArrayList<>();
 
+    predicates.add(cb.equal(book.get("deleted"), false));
+
     if (keyword != null && !keyword.isEmpty()) {
       String like = "%" + keyword.toLowerCase() + "%";
       predicates.add(cb.or(
