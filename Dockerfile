@@ -23,6 +23,3 @@ ENV JVM_OPTS=""
 
 # 빌드된 jar 파일 실행
 ENTRYPOINT ["sh", "-c", "java ${JVM_OPTS} -jar build/libs/${PROJECT_NAME}-${PROJECT_VERSION}.jar"]
-
-시크릿매니저 env 상쇄 aws 시크릿매니저
- ecs definition
