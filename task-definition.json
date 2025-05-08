@@ -28,12 +28,5 @@
         { "name": "AWS_S3_BUCKET", "value": "${AWS_S3_BUCKET}" }
       ]
     }
-  ],
-  "loadBalancers": [
-    {
-      "targetGroupArn": "arn:aws:elasticloadbalancing:ap-northeast-2:700348254639:targetgroup/deokhugam-target/770b454397b133be",
-      "containerName": "ecs-deokhugam",
-      "containerPort": 8080
-    }
   ]
 }
