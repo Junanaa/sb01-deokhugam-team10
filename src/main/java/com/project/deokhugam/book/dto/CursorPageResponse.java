@@ -2,7 +2,9 @@ package com.project.deokhugam.book.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Getter;
 
+@Getter
 public class CursorPageResponse<T> {
 
   private List<T> content;

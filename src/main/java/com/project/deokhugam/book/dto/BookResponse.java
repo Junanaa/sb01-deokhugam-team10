@@ -45,8 +45,5 @@ public class BookResponse {
     response.setUpdatedAt(book.getUpdatedAt());
     return response;
   }
-
-  // Getters & Setters
-  // (생략 시 Lombok의 @Getter @Setter 사용 가능)
 }
 
