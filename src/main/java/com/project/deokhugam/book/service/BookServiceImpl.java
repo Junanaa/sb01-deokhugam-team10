@@ -12,7 +12,10 @@ import com.project.deokhugam.book.exception.BookNotFoundException;
 import com.project.deokhugam.book.mapper.BookMapper;
 import com.project.deokhugam.book.repository.BookRepository;
 import com.project.deokhugam.file.S3Uploader;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -24,6 +27,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Base64;
 
 @Service
 @Transactional
@@ -111,14 +118,28 @@ public class BookServiceImpl implements BookService {
 
       BookInfoResponse result = new BookInfoResponse();
       result.setTitle(item.path("title").asText());
-      result.setLink(item.path("link").asText());
-      result.setImage(item.path("image").asText());
       result.setAuthor(item.path("author").asText());
-      result.setDiscount(item.path("discount").asText());
       result.setPublisher(item.path("publisher").asText());
-      result.setPubdate(item.path("pubdate").asText());
       result.setIsbn(item.path("isbn").asText());
       result.setDescription(item.path("description").asText());
+
+      String externalImageUrl = item.path("image").asText();
+      String uploadedUrl = s3Uploader.uploadImageFromUrl(externalImageUrl, "book-thumbnails");
+      String base64Image = convertImageUrlToBase64(uploadedUrl);
+      result.setThumbnailImage(base64Image);
+
+      String pubdateStr = item.path("pubdate").asText(); // yyyymmdd
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+      LocalDate publishedDate = LocalDate.parse(pubdateStr, formatter);
+      result.setPublishedDate(publishedDate);
+
+      System.out.println(result.getIsbn());
+      System.out.println(result.getAuthor());
+      System.out.println(result.getPublisher());
+      System.out.println(result.getPublishedDate());
+      System.out.println(result.getPublisher());
+      System.out.println(result.getTitle());
+      System.out.println(result.getThumbnailImage());
 
       return result;
     } catch (Exception e) {
@@ -165,5 +186,22 @@ public class BookServiceImpl implements BookService {
         .build();
 
     bookRepository.save(book);
+  }
+
+
+  public String convertImageUrlToBase64(String imageUrl) {
+    try {
+      URL url = new URL(imageUrl);
+      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+      connection.setRequestProperty("User-Agent", "Mozilla/5.0"); // 중요
+      connection.connect();
+
+      try (InputStream inputStream = connection.getInputStream()) {
+        byte[] bytes = inputStream.readAllBytes(); // Java 9+
+        return Base64.getEncoder().encodeToString(bytes);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("이미지 URL → Base64 변환 실패", e);
+    }
   }
 }
