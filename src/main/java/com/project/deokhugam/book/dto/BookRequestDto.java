@@ -18,9 +18,4 @@ public class BookRequestDto {
   private String publisher;
   private LocalDate publishedDate;
   private String isbn;
-  private String thumbnailUrl;
-  private Long reviewCount;
-  private Long rating;
-  private LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
 }
