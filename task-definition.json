@@ -1,7 +1,7 @@
 {
   "family": "deokhugam-task",
   "networkMode": "awsvpc",
-  "requiresCompatibilities": [ "FARGATE" ],
+  "requiresCompatibilities": ["FARGATE"],
   "cpu": "1024",
   "memory": "3072",
   "executionRoleArn": "arn:aws:iam::700348254639:role/ecsTaskExecutionRole",
@@ -27,6 +27,13 @@
         { "name": "AWS_S3_REGION", "value": "${AWS_S3_REGION}" },
         { "name": "AWS_S3_BUCKET", "value": "${AWS_S3_BUCKET}" }
       ]
+    }
+  ],
+  "loadBalancers": [
+    {
+      "targetGroupArn": "arn:aws:elasticloadbalancing:ap-northeast-2:700348254639:targetgroup/deokhugam-target/770b454397b133be",
+      "containerName": "ecs-deokhugam",
+      "containerPort": 8080
     }
   ]
 }
