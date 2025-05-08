@@ -1,7 +1,5 @@
 package com.project.deokhugam.notification.controller;
 
-import com.project.deokhugam.global.exception.CustomException;
-import com.project.deokhugam.global.exception.ErrorCode;
 import com.project.deokhugam.global.response.CustomApiResponse;
 import com.project.deokhugam.notification.dto.request.NotificationUpdateRequest;
 import com.project.deokhugam.notification.dto.response.CursorPageResponseNotificationDto;
@@ -18,7 +16,6 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Profile;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Profile("local")
 @Validated
 @RestController
 @RequestMapping("/api/notifications")
@@ -37,7 +33,6 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    //  1. 알림 목록 조회
     @Operation(
             summary = "알림 목록 조회",
             description = "사용자의 알림 목록을 커서 기반으로 조회합니다."
@@ -50,19 +45,14 @@ public class NotificationController {
     @ApiResponse(responseCode = "400", description = "잘못된 요청 (정렬 방향 오류, 파라미터 누락 등)")
     @ApiResponse(responseCode = "404", description = "사용자 정보 없음")
     @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-
     @GetMapping
-    public CustomApiResponse<CursorPageResponseNotificationDto> getNotifications(
+    public ResponseEntity<CustomApiResponse<CursorPageResponseNotificationDto>> getNotifications(
             @Parameter(description = "사용자 ID", required = true, example = "123e4567-e89b-12d3-a456-426614174000")
             @RequestParam UUID userId,
 
-            @Parameter(
-                    description = "정렬 방향",
-                    example = "DESC",
-                    schema = @Schema(type = "string", allowableValues = {"ASC", "DESC"}, defaultValue = "DESC"))
+            @Parameter(description = "정렬 방향", example = "DESC", schema = @Schema(allowableValues = {"ASC", "DESC"}, defaultValue = "DESC"))
             @RequestParam(defaultValue = "DESC")
-            @Pattern(regexp = "ASC|DESC", message = "정렬 방향은 ASC 또는 DESC만 허용.")
-            String direction,
+            @Pattern(regexp = "ASC|DESC", message = "정렬 방향은 ASC 또는 DESC만 허용.") String direction,
 
             @Parameter(description = "커서 페이지네이션 커서", example = "cursor")
             @RequestParam(required = false) String cursor,
@@ -74,19 +64,12 @@ public class NotificationController {
             @Parameter(description = "페이지 크기", example = "20")
             @RequestParam(defaultValue = "20")
             @Min(value = 1, message = "limit은 1 이상의 정수.")
-            @Max(value = 100, message = "limit은 최대 100까지 허용.")
-            int limit
+            @Max(value = 100, message = "limit은 최대 100까지 허용.") int limit
     ) {
-        try {
-            return notificationService.getNotifications(userId, after, limit, direction);
-        } catch (Exception e) {
-            return CustomApiResponse.fail(new CustomException(ErrorCode.INTERNAL_SERVER_ERROR));
-        }
+        CustomApiResponse<CursorPageResponseNotificationDto> response = notificationService.getNotifications(userId, after, limit, direction);
+        return ResponseEntity.status(response.httpStatus()).body(response);
     }
 
-
-    // ✅ 2. 알림 읽음 상태 업데이트
-    @PatchMapping("/{notificationId}")
     @Operation(
             summary = "알림 읽음 상태 업데이트",
             description = "특정 알림의 읽음 상태를 업데이트합니다."
@@ -100,7 +83,8 @@ public class NotificationController {
     @ApiResponse(responseCode = "403", description = "알림 수정 권한 없음")
     @ApiResponse(responseCode = "404", description = "알림 정보 없음")
     @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    public CustomApiResponse<NotificationDto> updateNotification(
+    @PatchMapping("/{notificationId}")
+    public ResponseEntity<CustomApiResponse<NotificationDto>> updateNotification(
             @Parameter(description = "알림 ID", required = true, example = "123e4567-e89b-12d3-a456-426614174000")
             @PathVariable UUID notificationId,
 
@@ -109,21 +93,16 @@ public class NotificationController {
 
             @RequestBody @Valid NotificationUpdateRequest request
     ) {
-        try {
-            NotificationDto updated = notificationService.updateConfirmed(notificationId, userId, request);
-            return CustomApiResponse.ok(updated);
-        } catch (CustomException e) {
-            return CustomApiResponse.fail(e);
-        }
+        NotificationDto updated = notificationService.updateConfirmed(notificationId, userId, request);
+        return ResponseEntity.ok(CustomApiResponse.ok(updated));
     }
 
-    //  3. 모든 알림 읽음 처리
-    @PatchMapping("/read-all")
     @Operation(summary = "모든 알림 읽음 처리", description = "사용자의 모든 알림을 읽음 처리합니다.")
     @ApiResponse(responseCode = "204", description = "알림 읽음 처리 성공")
     @ApiResponse(responseCode = "400", description = "잘못된 요청 (사용자 ID 누락)")
     @ApiResponse(responseCode = "404", description = "사용자 정보 없음")
     @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    @PatchMapping("/read-all")
     public ResponseEntity<Void> readAllNotifications(
             @Parameter(description = "요청자 ID", required = true, example = "123e4567-e89b-12d3-a456-426614174000")
             @RequestHeader("Deokhugam-Request-User-ID") UUID userId
