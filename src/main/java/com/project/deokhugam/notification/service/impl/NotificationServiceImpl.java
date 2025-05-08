@@ -1,6 +1,7 @@
 package com.project.deokhugam.notification.service.impl;
 
 import com.project.deokhugam.notification.client.DashboardRestClient;
+import com.project.deokhugam.notification.client.ReviewRestClient;
 import com.project.deokhugam.dashboard.dto.PopularReviewDto;
 import com.project.deokhugam.global.exception.CustomException;
 import com.project.deokhugam.global.exception.ErrorCode;
@@ -8,6 +9,7 @@ import com.project.deokhugam.global.response.CustomApiResponse;
 import com.project.deokhugam.notification.dto.request.NotificationUpdateRequest;
 import com.project.deokhugam.notification.dto.response.CursorPageResponseNotificationDto;
 import com.project.deokhugam.notification.dto.response.NotificationDto;
+import com.project.deokhugam.notification.dto.response.ReviewDetailResponse;
 import com.project.deokhugam.notification.entity.Notification;
 import com.project.deokhugam.notification.repository.NotificationRepository;
 import com.project.deokhugam.notification.service.NotificationService;
@@ -27,6 +29,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final DashboardRestClient dashboardRestClient;
+    private final ReviewRestClient reviewRestClient;
 
     @Override
     @Transactional
@@ -41,7 +44,7 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setConfirmed(request.getConfirmed());
         notification.setUpdatedAt(LocalDateTime.now());
 
-        return toDto(notification);
+        return toDto(notification, userId);
     }
 
     @Override
@@ -65,7 +68,7 @@ public class NotificationServiceImpl implements NotificationService {
             after = LocalDateTime.now();
         }
 
-        PageRequest pageRequest = PageRequest.of(0, limit + 1); // hasNext 확인용
+        PageRequest pageRequest = PageRequest.of(0, limit + 1);
 
         List<Notification> notifications = "ASC".equalsIgnoreCase(direction)
                 ? notificationRepository.findNotificationsCursorAsc(userId, after, pageRequest)
@@ -73,7 +76,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         List<Notification> limitedResult = notifications.stream().limit(limit).collect(Collectors.toList());
         List<NotificationDto> dtos = limitedResult.stream()
-                .map(this::toDto)
+                .map(notification -> toDto(notification, userId))
                 .collect(Collectors.toList());
 
         boolean hasNext = notifications.size() > limit;
@@ -105,7 +108,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        return toDto(notificationRepository.save(notification));
+        return toDto(notificationRepository.save(notification), receiverUserId);
     }
 
     @Override
@@ -121,7 +124,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        return toDto(notificationRepository.save(notification));
+        return toDto(notificationRepository.save(notification), receiverUserId);
     }
 
     @Override
@@ -144,8 +147,8 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
-    private NotificationDto toDto(Notification notification) {
-        String reviewTitle = fetchReviewTitle(notification.getReviewId());
+    private NotificationDto toDto(Notification notification, UUID requesterId) {
+        String reviewTitle = fetchReviewTitle(notification.getReviewId(), requesterId);
 
         return NotificationDto.builder()
                 .id(notification.getId())
@@ -159,7 +162,12 @@ public class NotificationServiceImpl implements NotificationService {
                 .build();
     }
 
-    private String fetchReviewTitle(UUID reviewId) {
-        return "string";  // 추후 리뷰 API 연동 시 수정
+    private String fetchReviewTitle(UUID reviewId, UUID requesterId) {
+        try {
+            ReviewDetailResponse reviewDetail = reviewRestClient.getReviewDetail(reviewId, requesterId);
+            return reviewDetail.getBookTitle();
+        } catch (Exception e) {
+            return "";
+        }
     }
 }
