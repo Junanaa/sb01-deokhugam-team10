@@ -16,7 +16,6 @@ public class BookMapper {
     book.setPublisher(request.getPublisher());
     book.setPublishedDate(request.getPublishedDate());
     book.setIsbn(request.getIsbn());
-    book.setThumbnailUrl(request.getThumbnailUrl());
     book.setReviewCount(0L);
     book.setBookRating(0L);
     book.setCreatedAt(LocalDateTime.now());

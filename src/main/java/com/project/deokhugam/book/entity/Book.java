@@ -51,5 +51,7 @@ public class Book {
 	private LocalDateTime updatedAt;
 	private Long bookRank;
 	private Long bookScore;
+
+	@Column(name = "deleted")
 	private boolean deleted = false;
 }
